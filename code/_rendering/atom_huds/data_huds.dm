@@ -47,7 +47,7 @@
 	hud_icons = list(ID_HUD)
 
 /datum/atom_hud/data/human/security/advanced
-	hud_icons = list(ID_HUD, IMPTRACK_HUD, IMPLOYAL_HUD, IMPCHEM_HUD, WANTED_HUD, NANITE_HUD)
+	hud_icons = list(ID_HUD, IMPTRACK_HUD, IMPLOYAL_HUD, IMPCHEM_HUD, WANTED_HUD, NANITE_HUD, WEP_PERMIT_HUD)
 
 /datum/atom_hud/data/diagnostic
 
@@ -247,6 +247,7 @@
 	if(wear_id?.GetID())
 		holder.icon_state = "hud[ckey(wear_id.GetJobName())]"
 	sec_hud_set_security_status()
+	sec_hud_set_weap_permit()
 
 /mob/living/proc/sec_hud_set_implants()
 	var/image/holder
@@ -292,6 +293,16 @@
 					holder.icon_state = "huddischarged"
 					return
 	holder.icon_state = null
+
+/mob/living/carbon/human/proc/sec_hud_set_weap_permit()
+	var/image/holder = hud_list[WEP_PERMIT_HUD]
+	var/icon/I = icon(icon, icon_state, dir)
+	holder.pixel_y = I.Height() - world.icon_size
+	holder.icon_state = "hud_weap_permit"
+	
+	var/obj/item/card/id/idcard = get_idcard(FALSE)
+	if(!idcard || !(ACCESS_WEAPONS in idcard.access))
+		holder.icon_state = null
 
 /***********************************************
  Diagnostic HUDs!
